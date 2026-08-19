@@ -1,15 +1,18 @@
 from django.contrib import admin
 from .models import Producto, Pedido
 
+admin.site.site_header = "Administración Cafetería Barri"
+admin.site.site_title = "Panel Cafetería Barri"
+admin.site.index_title = "Gestión de Productos y Pedidos"
+
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ("id", "nombre", "precio", "catergoria", "disponible")
-    list_filter = ("categoria", "disponible")
-    search_fields = ("nombre",)
+    list_display = ('id', 'nombre', 'precio', 'categoria', 'disponible')
+    list_filter = ('categoria', 'disponible')
+    search_fields = ('nombre',)
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ("id", "cliente_nombre", "estado", "total", "fecha")
-    list_filter = ("estado", "fecha")
-    search_fields = ("cliente_nombre")
-
+    list_display = ('id', 'cliente_nombre', 'estado', 'total', 'fecha')
+    list_filter = ('estado', 'fecha')
+    search_fields = ('cliente_nombre',)
