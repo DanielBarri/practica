@@ -20,6 +20,8 @@ class Producto(models.Model):
 
     # Soporte para archivos multimedia (Media Files)
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
+
+    #pdf_ficha = models.FileField(upload_to='pdfs/', null=True, blank=True)
     
     def __str__(self):
         return f"{self.nombre} - ${self.precio}"
