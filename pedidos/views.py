@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 # Create your views here.
 from rest_framework import viewsets, status
@@ -6,6 +7,14 @@ from rest_framework.response import Response
 
 from pedidos.dao.cafeteria_dao import ProductoDAO, PedidoDAO
 from pedidos.serializers import ProductoSerializer, PedidoSerializer
+
+# ==========================================
+# 0. ROLES
+# ==========================================
+
+def es_cocina(user):
+    """Verifica si el usuario tiene rol de cocina/barista"""
+    return user.is_authenticated and (user.groups.filter(name='Cocina').exists() or user.is_superuser)
 
 # ==========================================
 # 1. VISTAS WEB (HTML)
@@ -16,6 +25,8 @@ def menu_view(request):
     productos = ProductoDAO.obtener_disponibles()
     return render(request, 'mainvista/menu.html', {'productos': productos})
 
+@login_required
+@user_passes_test(es_cocina, login_url='/admin/login/')
 def cocina_view(request):
     """Muestra las comandas al Barista/Cocina utilizando el DAO"""
     pedidos = PedidoDAO.obtener_todos()
@@ -29,6 +40,8 @@ def crear_pedido_action(request):
         PedidoDAO.crear_pedido_con_producto(cliente_nombre, producto_id)
     return redirect('cocina')
 
+@login_required
+@user_passes_test(es_cocina, login_url='/admin/login/')
 def cambiar_estado_action(request, pedido_id):
     """Actualiza el estado de una comanda desde la vista web"""
     if request.method == 'POST':
